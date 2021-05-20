@@ -5,16 +5,29 @@ VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMS-Tool", "SMS-Tool\SMS-Tool.csproj", "{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{E3531D57-E401-4F51-B804-936BCAF40643}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Debug|x64.ActiveCfg = Debug|x64
+		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Debug|x64.Build.0 = Debug|x64
 		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Release|x64.ActiveCfg = Release|x64
+		{6A1EB93A-0572-4DB3-B3A8-E0D6D257CF56}.Release|x64.Build.0 = Release|x64
+		{E3531D57-E401-4F51-B804-936BCAF40643}.Debug|Any CPU.ActiveCfg = Debug
+		{E3531D57-E401-4F51-B804-936BCAF40643}.Debug|x64.ActiveCfg = Debug
+		{E3531D57-E401-4F51-B804-936BCAF40643}.Release|Any CPU.ActiveCfg = Release
+		{E3531D57-E401-4F51-B804-936BCAF40643}.Release|Any CPU.Build.0 = Release
+		{E3531D57-E401-4F51-B804-936BCAF40643}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

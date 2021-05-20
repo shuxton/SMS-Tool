@@ -1,22 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Odbc;
+using System.IO;
 
 namespace SMS_Tool
 {
     public class DatabaseAccessor
     {
-       static OdbcConnection DbConnection = new OdbcConnection("DSN=ibsbalele");
+        
+        public string initialiseDb(char mode,string con)
+        {
+            var userPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var filename = Path.Combine(userPath, "dbconfig.txt");
 
-     
+            var connectionString = con;
+
+            if (File.Exists(filename) && mode == 'r')
+                connectionString = File.ReadAllText(filename);
+
+            else if (mode == 'w')
+            {
+                File.WriteAllText(filename, connectionString);
+                return filename;
+            }
+
+
+
+            return connectionString;
+
+        }
+        
         public Dictionary<string,string> GetLoanSchema()
         {
             Dictionary<string, string> loanScheme = new Dictionary<string, string>();
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
+          
+                OdbcConnection DbConnection = new OdbcConnection(initialiseDb('r',""));
+                OdbcCommand DbCommand = null;
+
+
             try
             {
-                
+                DbConnection.Open();
+                DbCommand = DbConnection.CreateCommand();
+
                 DbCommand.CommandText = "SELECT CATG,SCM_CODE,SCM_DESC FROM schemast";
                 OdbcDataReader DbReader = DbCommand.ExecuteReader();
                 int fCount = DbReader.FieldCount;
@@ -35,20 +61,24 @@ namespace SMS_Tool
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
+            if(DbCommand!=null)
             DbCommand.Dispose();
             DbConnection.Close();
             return loanScheme;
         }
 
-        public List<SmsTable> GetSmsTable(string loanSchema,DateTime toDate,DateTime fromDate,int category)
+        public List<SmsTable> GetSmsTable(string loanSchema,DateTime toDate,DateTime fromDate,string category)
         {
             List<SmsTable> table = new List<SmsTable>();
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
+            OdbcConnection DbConnection = new OdbcConnection(initialiseDb('r', ""));
+
+            OdbcCommand DbCommand = null;
             try
             {
-               
-                if (category == 1 || category == 5)
+                DbConnection.Open();
+                DbCommand = DbConnection.CreateCommand();
+
+                if (category.Equals("01") || category.Equals("05"))
                     DbCommand.CommandText = "SELECT LON_CODE,END_DT,MNAME,RCONTACT,MBRMAST.MCODE FROM CCLNMAS INNER JOIN MBRMAST ON CCLNMAS.MCODE=MBRMAST.MCODE" +
                                            " WHERE END_DT > #" + fromDate.Date + "# AND END_DT < +#" + toDate.Date + "#";
                 else
@@ -86,6 +116,7 @@ namespace SMS_Tool
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
+            if (DbCommand != null)
             DbCommand.Dispose();
             DbConnection.Close();
             return table;
@@ -95,10 +126,13 @@ namespace SMS_Tool
         public Dictionary<string, string> GetSmsCredentials()
         {
             Dictionary<string, string> credentials = new Dictionary<string, string>();
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
+            OdbcConnection DbConnection = new OdbcConnection(initialiseDb('r', ""));
+
+            OdbcCommand DbCommand = null;
             try
             {
+                DbConnection.Open();
+                DbCommand = DbConnection.CreateCommand();
 
                 DbCommand.CommandText = "SELECT Sender_ID,User_ID,Password FROM sms_settings";
                 OdbcDataReader DbReader = DbCommand.ExecuteReader();
@@ -120,7 +154,8 @@ namespace SMS_Tool
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-            DbCommand.Dispose();
+            if (DbCommand != null)
+                DbCommand.Dispose();
             DbConnection.Close();
             return credentials;
         }
@@ -129,10 +164,13 @@ namespace SMS_Tool
         public int InsertSmsTable(string mobile_no, string message,string custid,string acc_no)
         {
             int affected = 0;
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
+            OdbcConnection DbConnection = new OdbcConnection(initialiseDb('r', ""));
+
+            OdbcCommand DbCommand = null;
             try
             {
+                DbConnection.Open();
+                DbCommand = DbConnection.CreateCommand();
 
                 DbCommand.CommandText = "INSERT INTO sms_send (mobile_no,custid,sms,gen_dt,gen_dttime,module,ac_no)" +
                     " VALUES ('"+mobile_no + "','" + custid+ "','" + message + "',#" + DateTime.Now.Date + "#,'" + DateTime.Now.ToString() + "','SMS_Tool','" + acc_no + "')";
@@ -144,7 +182,8 @@ namespace SMS_Tool
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-            DbCommand.Dispose();
+            if (DbCommand != null)
+                DbCommand.Dispose();
             DbConnection.Close();
             return affected;
 

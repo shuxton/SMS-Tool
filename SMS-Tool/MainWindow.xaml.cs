@@ -13,7 +13,9 @@ namespace SMS_Tool
     {
         public MainWindow()
         {
+           
             InitializeComponent();
+            
         }
 
         public static List<SmsTable> table = new List<SmsTable>();
@@ -35,9 +37,9 @@ namespace SMS_Tool
                 DatabaseAccessor databaseAccessor = new DatabaseAccessor();
 
                 var data = databaseAccessor.GetLoanSchema();
-                string category;
+                string category="";
                 System.Diagnostics.Debug.WriteLine(data.TryGetValue(loanScheme, out category));
-                table = databaseAccessor.GetSmsTable(loanScheme.Split(' ')[0].Trim(),toDate.Date,fromDate.Date,int.Parse(category));
+                table = databaseAccessor.GetSmsTable(loanScheme.Split(' ')[0].Trim(),toDate.Date,fromDate.Date,category);
                 if (table.Count == 0)
                 {
                     smsTableOutput.ItemsSource = null;
@@ -45,7 +47,7 @@ namespace SMS_Tool
                     smsButton.IsEnabled = false;
                     smsButton.Visibility = Visibility.Hidden;
 
-                    MessageBox.Show("No users found in this list");
+                    MessageBox.Show("No users found in this list","Info");
                 }
                 else
                 {
@@ -60,7 +62,7 @@ namespace SMS_Tool
 
             else
             {
-                MessageBox.Show("Error: One or more fields is empty");
+                MessageBox.Show("One or more fields is empty","Error");
             }
            
 
@@ -71,7 +73,16 @@ namespace SMS_Tool
             DatabaseAccessor databaseAccessor = new DatabaseAccessor();
             
             var data = databaseAccessor.GetLoanSchema();
-            foreach(var scheme in data)
+            if (data.Count == 0)
+            {
+               
+                MessageBox.Show("Please update the dbconfig file\nFormat: DSN=Enter your dsn","Databse Error");
+                
+                System.Diagnostics.Process.Start(@databaseAccessor.initialiseDb('w', ""));
+                System.Windows.Application.Current.Shutdown();
+
+            }
+            foreach (var scheme in data)
             {
                 loanSchemeInput.Items.Add(scheme.Key);
             }
@@ -105,7 +116,7 @@ namespace SMS_Tool
                 }
             }
 
-            MessageBox.Show("Operation Complete: SMS Sent!");
+            MessageBox.Show("Operation Complete: SMS Sent!","Success");
 
 
 
