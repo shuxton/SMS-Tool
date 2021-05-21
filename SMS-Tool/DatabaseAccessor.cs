@@ -67,7 +67,7 @@ namespace SMS_Tool
             return loanScheme;
         }
 
-        public List<SmsTable> GetSmsTable(string loanSchema,DateTime toDate,DateTime fromDate,string category)
+        public List<SmsTable> GetSmsTable(string loanScheme,DateTime toDate,DateTime fromDate,string category)
         {
             List<SmsTable> table = new List<SmsTable>();
             OdbcConnection DbConnection = new OdbcConnection(initialiseDb('r', ""));
@@ -80,10 +80,10 @@ namespace SMS_Tool
 
                 if (category.Equals("01") || category.Equals("05"))
                     DbCommand.CommandText = "SELECT LON_CODE,END_DT,MNAME,RCONTACT,MBRMAST.MCODE FROM CCLNMAS INNER JOIN MBRMAST ON CCLNMAS.MCODE=MBRMAST.MCODE" +
-                                           " WHERE END_DT > #" + fromDate.Date + "# AND END_DT < +#" + toDate.Date + "#";
+                                           " WHERE END_DT >= #" + fromDate.Date + "# AND END_DT <= +#" + toDate.Date + "# AND mid(LON_CODE,1,3) = '"+loanScheme+"'";
                 else
                     DbCommand.CommandText = "SELECT LON_CODE,END_DT,MNAME,RCONTACT,MBRMAST.MCODE FROM LOAN_MAS INNER JOIN MBRMAST ON LOAN_MAS.MCODE=MBRMAST.MCODE" +
-                                       " WHERE END_DT > #" + fromDate.Date + "# AND END_DT < +#" + toDate.Date + "#";
+                                       " WHERE END_DT >= #" + fromDate.Date + "# AND END_DT <= +#" + toDate.Date + "# AND mid(LON_CODE,1,3) = '" + loanScheme + "'";
                 OdbcDataReader DbReader = DbCommand.ExecuteReader();
                 int fCount = DbReader.FieldCount;
                 while (DbReader.Read())
